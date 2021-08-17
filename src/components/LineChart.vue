@@ -36,7 +36,7 @@ export default {
                 yAxisKey: `death`,
               },
             },
-            {
+            /* {
               label: "No of cured",
               data: this.cured,
               backgroundColor: "#3bc79a",
@@ -48,7 +48,7 @@ export default {
               parsing: {
                 yAxisKey: "cured",
               },
-            },
+            }, */
             {
               label: "Confirmed Cases",
               data: this.activeCases,
