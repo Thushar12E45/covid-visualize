@@ -21,18 +21,31 @@
           class="mr-3"
         />
       </div>
-
+      <!-- <div class="flex">
+        <litepie-datepicker
+          ref="myRef"
+          :formatter="formatter"
+          v-model="dateValue"
+          class="litepie-secondary"
+        />
+      </div> -->
+      <!-- <button @click="checkingDateFn(dateValue)">Checking</button> -->
       <div>
-        <div v-show="isFilterVisible">
+        <div v-if="isFilterVisible">
+          <!-- <div class="flex mb-0">
+            <litepie-datepicker
+              ref="myRef"
+              :formatter="formatter"
+              v-model="dateValue"
+              class="litepie-secondary"
+            />
+          </div> -->
           <FilterForm
             :stateList="stateList"
             :startDate="startDate"
             :endDate="endDate"
             @filter-state="filterState"
           />
-        </div>
-        <div>
-          <Cards />
         </div>
         <div class="flex w-full">
           <ActiveCasesByStates :stateWiseCovidData="stateWiseCovidData" />
@@ -51,8 +64,6 @@ import ActiveCasesByStates from "./components/ActiveCasesByStates.vue";
 import OverallTrend from "./components/OverallTrend.vue";
 import FilterForm from "./components/FilterForm.vue";
 import SideBar from "./components/SideBar.vue";
-import Cards from "./components/Cards.vue";
-
 import { ref } from "vue";
 import LitepieDatepicker from "litepie-datepicker";
 export default {
@@ -64,7 +75,6 @@ export default {
     OverallTrend,
     FilterForm,
     LitepieDatepicker,
-    Cards,
   },
   setup(dateValue) {
     const myRef = ref(null);
@@ -101,15 +111,15 @@ export default {
       );
     });
     this.overAllTrendData = this.stateWiseCovidData;
-  
+    console.table(this.stateWiseCovidData);
+    console.table(this.covidData);
   },
   methods: {
-    handleDateFilter(startDate="2020-01-30", endDate="2021-08-02") {
+    handleDateFilter(startDate, endDate) {
       return this.covidData.filter((data) => {
         return data["Date"] >= `${startDate}` && data["Date"] <= `${endDate}`;
       });
     },
-
     filterState(filterCondn) {
       const stateArr = Object.values(filterCondn.stateObj);
 
@@ -119,7 +129,7 @@ export default {
       );
 
       if (stateArr.length > 0) {
-        this.stateWiseCovidData;
+        this.stateWiseCovidData 
         const stateListFilteredData = dateFilteredData.filter((data) => {
           return stateArr.includes(data["State/UnionTerritory"]);
         });
@@ -130,6 +140,11 @@ export default {
         this.overAllTrendData = dateFilteredData;
       }
     },
+    /*   checkingDateFn(date) {
+      console.log("-------------------------");
+      console.log(date.split(" ~ "));
+      console.log("-------------------------");
+    }, */
   },
 };
 </script>
@@ -140,8 +155,14 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background-color: #f9f9f9;
+  background-color: #f7f6f6;
   height: 140vh;
-  width: 100.5vw;
 }
+/* .sub-header{
+width: 88vw;
+} */
+/* * { 
+  outline: 1px solid red;
+  outline-offset: -1px;
+} */
 </style>

@@ -1,4 +1,9 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCube, faFile, faPaperPlane, faBars, faFilter, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import App from './App.vue';
+import './index.css';
 
-createApp(App).mount('#app')
+library.add(faCube, faFile, faPaperPlane, faBars, faFilter, faChevronDown);
+createApp(App).component('fa', FontAwesomeIcon).mount('#app');
