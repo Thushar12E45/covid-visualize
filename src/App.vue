@@ -44,9 +44,8 @@
             :overAllTrendData="overAllTrendData"
             :stateName="stateName"
           />
-          
         </div>
-                </div>
+      </div>
 
     </section>
   </div>
