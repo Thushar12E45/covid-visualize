@@ -1,7 +1,6 @@
 <template>
- 
   <section class="flex flex-row justify-center bg-white p-1">
-    <span class="mt-2 mr-2 " > Select a Date Range: </span>
+    <span class="mt-2 mr-2"> Select a Date Range: </span>
 
     <div class="flex mb-0">
       <litepie-datepicker
@@ -13,17 +12,26 @@
     </div>
     <div class="relative">
       <div
-        class="bg-white mx-2 py-2 pb-2 border border-gray-300 rounded-lg w-60 focus:border-gray-700 "
+        class="
+          bg-white
+          mx-2
+          py-2
+          pb-2
+          w-60
+          border border-gray-300
+          rounded-lg
+          focus:border-gray-700
+        "
         @click="isStateListVisible = !isStateListVisible"
       >
         Select states
         <fa icon="chevron-down" class="ml-2" />
       </div>
       <div
-        class="p-2 pl-4 m-2 mt-0 bg-white absolute w-60 border"
+        class="p-2 pl-4 m-2 mt-0 bg-white absolute w-60 h-60 border z-50 overflow-scroll"
         v-if="isStateListVisible"
       >
-        <div v-for="state in stateList" :key="state" class="text-left text-sm">
+        <div v-for="state in stateList" :key="state" class="text-left text-sm hover:bg-gray-200">
           <input
             type="checkbox"
             :id="state"
@@ -41,16 +49,12 @@
     >
       Go
     </button>
-
-   
+    
   </section>
-
 </template>
 
 
 <script>
-import vueMultiSelect from "vue-multi-select";
-import "vue-multi-select/dist/lib/vue-multi-select.css";
 import { ref } from "vue";
 import LitepieDatepicker from "litepie-datepicker";
 export default {
@@ -60,6 +64,9 @@ export default {
       singleState: [],
       isStateListVisible: false,
       dateValue: "",
+
+      value: [],
+      options: ["list", "of", "options"],
     };
   },
   props: {
@@ -68,7 +75,6 @@ export default {
     endDate: String,
   },
   components: {
-    vueMultiSelect,
     LitepieDatepicker,
   },
   setup(dateValue) {
@@ -76,8 +82,6 @@ export default {
     dateValue = ref([]);
     const formatter = ref({
       date: "YYYY-MM-DD",
-      // date: "DD-MM-YYYY",
-
       month: "MMM",
     });
     return {
@@ -99,5 +103,3 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>

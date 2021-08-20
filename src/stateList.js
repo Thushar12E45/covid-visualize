@@ -28,7 +28,7 @@ const stateList = [
   'Uttarakhand',
   'Uttar Pradesh',
   'West Bengal',
-  'Andaman and Nicobar Islands',
+  'Andaman and Nicobar ',
   'Chandigarh',
   'Daman and Diu',
   'Delhi',

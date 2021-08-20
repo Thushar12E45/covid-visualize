@@ -7,7 +7,7 @@
     </section>
     <section class="flex-1">
       <div
-        class="flex flex-row justify-between mb-2 p-2 pb bg-white sub-header"
+        class="flex flex-row justify-between mb-1 p-2 pb bg-white sub-header"
       >
         <fa
           icon="bars"
@@ -17,8 +17,8 @@
         <fa
           icon="filter"
           size="lg"
-          @click="isFilterVisible = !isFilterVisible"
           class="mr-3"
+          @click="isFilterVisible = !isFilterVisible"
         />
       </div>
 
@@ -34,27 +34,36 @@
         <div>
           <Cards />
         </div>
-        <div class="flex w-full">
-          <ActiveCasesByStates :stateWiseCovidData="stateWiseCovidData" />
-          <OverallTrend :overAllTrendData="overAllTrendData" />
+        <div class="flex ">
+          <ActiveCasesByStates
+            :stateWiseCovidData="stateWiseCovidData"
+            :endDate="endDate"
+            @filter-state="filterStateFromChart"
+          />
+          <OverallTrend
+            :overAllTrendData="overAllTrendData"
+            :stateName="stateName"
+          />
+          
         </div>
-      </div>
+                </div>
+
     </section>
   </div>
 </template>
 
 <script>
 import covidData from "../public/covidData";
+
 import stateList from "./stateList";
 import Header from "./components/Header.vue";
 import ActiveCasesByStates from "./components/ActiveCasesByStates.vue";
 import OverallTrend from "./components/OverallTrend.vue";
+
 import FilterForm from "./components/FilterForm.vue";
 import SideBar from "./components/SideBar.vue";
 import Cards from "./components/Cards.vue";
 
-import { ref } from "vue";
-import LitepieDatepicker from "litepie-datepicker";
 export default {
   name: "App",
   components: {
@@ -63,22 +72,9 @@ export default {
     ActiveCasesByStates,
     OverallTrend,
     FilterForm,
-    LitepieDatepicker,
     Cards,
   },
-  setup(dateValue) {
-    const myRef = ref(null);
-    dateValue = ref([]);
-    const formatter = ref({
-      date: "DD-MM-YYYY",
-      month: "MMM",
-    });
-    return {
-      myRef,
-      dateValue,
-      formatter,
-    };
-  },
+
   data() {
     return {
       isSidebarVisible: true,
@@ -88,46 +84,63 @@ export default {
       stateWiseCovidData: [],
       startDate: "2020-03-23",
       endDate: "2020-04-24",
-      individualState: "",
+      stateName: "",
       overAllTrendData: "",
+      dateFilteredData: "",
+      stateWiseFilteredData: "",
     };
   },
   created() {
     this.covidData = covidData;
     this.stateList = stateList;
-    this.stateWiseCovidData = this.covidData.filter((data) => {
+    this.dateFilteredData = this.covidData.filter((data) => {
       return (
         data["Date"] >= `${this.startDate}` && data["Date"] <= `${this.endDate}`
       );
     });
-    this.overAllTrendData = this.stateWiseCovidData;
-  
+
+    this.stateWiseCovidData = this.dateFilteredData;
+    this.stateWiseFilteredData = this.dateFilteredData;
+    this.overAllTrendData = this.dateFilteredData;
   },
   methods: {
-    handleDateFilter(startDate="2020-01-30", endDate="2021-08-02") {
+    handleDateFilter() {
       return this.covidData.filter((data) => {
-        return data["Date"] >= `${startDate}` && data["Date"] <= `${endDate}`;
+        return (
+          data["Date"] >= `${this.startDate}` &&
+          data["Date"] <= `${this.endDate}`
+        );
       });
     },
-
+    filterStateFromChart(state) {
+      this.stateName = state;
+      if (state) {
+        const filterIndividualState = this.dateFilteredData.filter((data) => {
+          return data["State/UnionTerritory"] === state;
+        });
+        this.overAllTrendData = filterIndividualState;
+      } else {
+        this.overAllTrendData = this.stateWiseFilteredData;
+      }
+    },
     filterState(filterCondn) {
       const stateArr = Object.values(filterCondn.stateObj);
-
-      const dateFilteredData = this.handleDateFilter(
-        filterCondn.startDate,
-        filterCondn.endDate
-      );
+      if (filterCondn.startDate) {
+        this.startDate = filterCondn.startDate;
+        this.endDate = filterCondn.endDate;
+      }
+      this.dateFilteredData = this.handleDateFilter();
 
       if (stateArr.length > 0) {
-        this.stateWiseCovidData;
-        const stateListFilteredData = dateFilteredData.filter((data) => {
+        this.stateWiseFilteredData = this.dateFilteredData.filter((data) => {
           return stateArr.includes(data["State/UnionTerritory"]);
         });
-        this.stateWiseCovidData = stateListFilteredData;
-        this.overAllTrendData = stateListFilteredData;
+        this.stateWiseCovidData = this.stateWiseFilteredData;
+        this.overAllTrendData = this.stateWiseFilteredData;
       } else {
-        this.stateWiseCovidData = dateFilteredData;
-        this.overAllTrendData = dateFilteredData;
+        this.stateWiseFilteredData = this.dateFilteredData;
+        this.stateWiseCovidData = this.dateFilteredData;
+        this.overAllTrendData = this.dateFilteredData;
       }
     },
   },

@@ -1,12 +1,9 @@
 <template>
-  <div>
-    <canvas id="line-chart"></canvas>
-  </div>
+  <div id="line-chart"></div>
 </template>
 
 <script>
-import Chart from "chart.js/auto";
-
+import ApexCharts from "apexcharts";
 export default {
   name: "LineChart",
   props: {
@@ -21,82 +18,75 @@ export default {
   },
   methods: {
     createLineChart(ctx) {
-      const chart = new Chart(ctx, {
-        type: "line",
-        data: {
-          datasets: [
-            {
-              label: "No of Deaths",
-              data: this.noOfDeaths,
-              backgroundColor: "#ee69a7",
-              borderColor: "#ee69a7",
-              pointRadius: 2,
-              borderWidth: 1,
-              parsing: {
-                yAxisKey: `death`,
-              },
-            },
-            /* {
-              label: "No of cured",
-              data: this.cured,
-              backgroundColor: "#3bc79a",
-              borderWidth: 1,
-              pointBorderWidth: 0.001,
-              borderColor: "#3bc79a",
-              pointRadius: 2,
-
-              parsing: {
-                yAxisKey: "cured",
-              },
-            }, */
-            {
-              label: "Confirmed Cases",
-              data: this.activeCases,
-              backgroundColor: "rgba(255, 205, 86)",
-              borderColor: "rgba(255, 205, 86)",
-              borderWidth: 1,
-              pointRadius: 2,
-
-              parsing: {
-                yAxisKey: "confirm",
-              },
-            },
-          ],
+      var options = {
+        chart: {
+          type: "line",
+          height: "385px",
         },
-        options: {
-          title: {
-            display: true,
-            text: "Chart.js Line Chart",
+        series: [
+          {
+            name: "Active Cases",
+            data: this.activeCases,
           },
-          parsing: {
-            xAxisKey: "date",
+          {
+            name: "Cured",
+            data: this.cured,
           },
-          tooltips: {
-            mode: "label",
+          {
+            name: "Death",
+            data: this.noOfDeaths,
+          },
+        ],
+        yaxis: {
+          labels: {
+            formatter: function (val, index) {
+              if (val < 999) {
+                return val;
+              } else if (val < 500000) {
+                return val / 1000 + "" + "K";
+              }
+              return (val / 1000000).toFixed(1) + "" + "M";
+            },
           },
         },
-      });
+        tooltip: {
+          enabled: true,
+          y: {
+            formatter(val) {
+              val = parseInt(val).toLocaleString("en-IN");
+              return val;
+            },
+          },
+        },
+        stroke: {
+          width: 3,
+          curve: "straight",
+        },
+      };
+      const chart = new ApexCharts(ctx, options);
       return chart;
     },
   },
   updated() {
-    console.log("destroyed");
-    this.lineChart.destroy();
-    const ctx = document.getElementById("line-chart");
-    this.lineChart = this.createLineChart(ctx);
+    this.lineChart.updateSeries([
+      {
+        name: "Active Cases",
+        data: this.activeCases,
+      },
+      {
+        name: "Cured",
+        data: this.cured,
+      },
+      {
+        name: "Death",
+        data: this.noOfDeaths,
+      },
+    ]);
   },
   mounted() {
     const ctx = document.getElementById("line-chart");
-
     this.lineChart = this.createLineChart(ctx);
+    this.lineChart.render();
   },
 };
 </script>
-
-<style scoped>
-/* div {
-  width: 30vw;
-  padding: 1em;
-  background-color: white;
-} */
-</style>

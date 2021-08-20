@@ -1,6 +1,6 @@
 <template>
   <h1
-  class="text-5xl bg-white border-b border-gray-600 "
+  class="text-4xl bg-white border-b border-gray-600 "
   >Covid Tracker</h1>
 </template>
 
